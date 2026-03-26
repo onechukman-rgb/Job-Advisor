@@ -18,14 +18,7 @@ let db: Firestore | undefined
 function getFirebaseApp() {
   if (typeof window === "undefined") return undefined
   
-  console.log("[v0] Firebase Config Check:", {
-    apiKey: firebaseConfig.apiKey ? "SET (" + firebaseConfig.apiKey.substring(0, 10) + "...)" : "NOT SET",
-    authDomain: firebaseConfig.authDomain || "NOT SET",
-    projectId: firebaseConfig.projectId || "NOT SET",
-  })
-  
   if (!firebaseConfig.apiKey) {
-    console.error("[v0] Firebase API Key is missing! Please set NEXT_PUBLIC_FIREBASE_API_KEY")
     return undefined
   }
   
