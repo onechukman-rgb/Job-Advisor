@@ -3,12 +3,12 @@ import { getAuth, GoogleAuthProvider, Auth } from "firebase/auth"
 import { getFirestore, Firestore } from "firebase/firestore"
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: "AIzaSyApVmD0PqmB8u5UtN68KijEFYA8vTdreLo",
+  authDomain: "job-advisor-5cc72.firebaseapp.com",
+  projectId: "job-advisor-5cc72",
+  storageBucket: "job-advisor-5cc72.firebasestorage.app",
+  messagingSenderId: "817195947661",
+  appId: "1:817195947661:web:1441ac8ead51164e3934c4"
 }
 
 let app: FirebaseApp | undefined
@@ -17,10 +17,6 @@ let db: Firestore | undefined
 
 function getFirebaseApp() {
   if (typeof window === "undefined") return undefined
-  
-  if (!firebaseConfig.apiKey) {
-    return undefined
-  }
   
   if (!app) {
     app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
@@ -49,11 +45,3 @@ export function getFirebaseDb() {
 }
 
 export const googleProvider = new GoogleAuthProvider()
-
-export function isFirebaseConfigured(): boolean {
-  return !!(
-    process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
-    process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN &&
-    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
-  )
-}

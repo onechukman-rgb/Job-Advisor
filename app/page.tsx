@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { signInWithPopup, signOut, onAuthStateChanged, User } from "firebase/auth"
 import { collection, addDoc, getDocs, orderBy, query } from "firebase/firestore"
-import { getFirebaseAuth, getFirebaseDb, googleProvider, isFirebaseConfigured } from "@/lib/firebase"
+import { getFirebaseAuth, getFirebaseDb, googleProvider } from "@/lib/firebase"
 import { Header } from "@/components/header"
 import { ReviewCard } from "@/components/review-card"
 import { ReviewForm } from "@/components/review-form"
@@ -22,11 +22,6 @@ export default function Home() {
   const [user, setUser] = useState<User | null>(null)
   const [reviews, setReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)
-  const [firebaseReady, setFirebaseReady] = useState(false)
-
-  useEffect(() => {
-    setFirebaseReady(isFirebaseConfigured())
-  }, [])
 
   useEffect(() => {
     const auth = getFirebaseAuth()
@@ -105,33 +100,6 @@ export default function Home() {
       userId: user.uid,
     })
     await loadReviews()
-  }
-
-  if (!firebaseReady) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="max-w-lg mx-auto p-8 text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Configurazione Firebase Richiesta</h1>
-          <p className="text-muted-foreground mb-6">
-            Per utilizzare JobAdvisor, devi configurare le variabili d&apos;ambiente Firebase.
-          </p>
-          <div className="bg-muted p-4 rounded-lg text-left text-sm">
-            <p className="font-semibold mb-2">Aggiungi queste variabili in Settings {">"} Vars:</p>
-            <ul className="space-y-1 font-mono text-xs">
-              <li>NEXT_PUBLIC_FIREBASE_API_KEY</li>
-              <li>NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN</li>
-              <li>NEXT_PUBLIC_FIREBASE_PROJECT_ID</li>
-              <li>NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET</li>
-              <li>NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID</li>
-              <li>NEXT_PUBLIC_FIREBASE_APP_ID</li>
-            </ul>
-          </div>
-          <p className="text-xs text-muted-foreground mt-4">
-            Trova questi valori nella Firebase Console sotto Project Settings {">"} General {">"} Your apps
-          </p>
-        </div>
-      </div>
-    )
   }
 
   return (
