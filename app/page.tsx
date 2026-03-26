@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { signInWithPopup, signOut, onAuthStateChanged, User } from "firebase/auth"
 import { collection, addDoc, getDocs, orderBy, query } from "firebase/firestore"
-import { auth, db, googleProvider } from "@/lib/firebase"
+import { getFirebaseAuth, getFirebaseDb, googleProvider } from "@/lib/firebase"
 import { Header } from "@/components/header"
 import { ReviewCard } from "@/components/review-card"
 import { ReviewForm } from "@/components/review-form"
@@ -24,6 +24,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const auth = getFirebaseAuth()
+    if (!auth) return
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser)
     })
@@ -35,6 +38,12 @@ export default function Home() {
   }, [])
 
   const loadReviews = async () => {
+    const db = getFirebaseDb()
+    if (!db) {
+      setLoading(false)
+      return
+    }
+
     try {
       const q = query(collection(db, "reviews"), orderBy("date", "desc"))
       const querySnapshot = await getDocs(q)
@@ -60,6 +69,9 @@ export default function Home() {
   }
 
   const handleLogin = async () => {
+    const auth = getFirebaseAuth()
+    if (!auth) return
+
     try {
       await signInWithPopup(auth, googleProvider)
     } catch (error) {
@@ -68,6 +80,9 @@ export default function Home() {
   }
 
   const handleLogout = async () => {
+    const auth = getFirebaseAuth()
+    if (!auth) return
+
     try {
       await signOut(auth)
     } catch (error) {
@@ -76,10 +91,13 @@ export default function Home() {
   }
 
   const handleAddReview = async (data: { company: string; text: string; rating: number }) => {
+    const db = getFirebaseDb()
+    if (!db || !user) return
+
     await addDoc(collection(db, "reviews"), {
       ...data,
       date: new Date(),
-      userId: user?.uid,
+      userId: user.uid,
     })
     await loadReviews()
   }
