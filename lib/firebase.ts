@@ -17,6 +17,18 @@ let db: Firestore | undefined
 
 function getFirebaseApp() {
   if (typeof window === "undefined") return undefined
+  
+  console.log("[v0] Firebase Config Check:", {
+    apiKey: firebaseConfig.apiKey ? "SET (" + firebaseConfig.apiKey.substring(0, 10) + "...)" : "NOT SET",
+    authDomain: firebaseConfig.authDomain || "NOT SET",
+    projectId: firebaseConfig.projectId || "NOT SET",
+  })
+  
+  if (!firebaseConfig.apiKey) {
+    console.error("[v0] Firebase API Key is missing! Please set NEXT_PUBLIC_FIREBASE_API_KEY")
+    return undefined
+  }
+  
   if (!app) {
     app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
   }
@@ -44,3 +56,11 @@ export function getFirebaseDb() {
 }
 
 export const googleProvider = new GoogleAuthProvider()
+
+export function isFirebaseConfigured(): boolean {
+  return !!(
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
+    process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN &&
+    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
+  )
+}
